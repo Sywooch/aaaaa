@@ -1,0 +1,16 @@
+RewriteEngine on
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule . index.php
+
+<Files "./yii">
+Order Allow,Deny
+Deny from all
+</Files>
+
+<Files "./yii.bat">
+Order Allow,Deny
+Deny from all
+</Files>
