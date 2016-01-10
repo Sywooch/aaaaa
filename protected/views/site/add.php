@@ -31,17 +31,22 @@ $this->params['breadcrumbs'] = ['label' => 'Отправить пост'];
     </div>
 
 <?php else: ?>
+    <h2>Отправить материал для сайта</h2>
+    Здесь Вы можете отправить любой материал, новость, цитату, картинку, видео или ссылку.
+    <div class="alert alert-info">
+        Основные правила
+    </div>
 
-    <div>
+    <div class="col-xs-12">
         <?php
         $form = ActiveForm::begin(['options' => ['class' => 'form-horizontal']]);
         echo
             $form->field($model, 'text')
-                ->textArea(['rows' => 8, 'placeholder' => 'Текст вашего поста, не более 2000 символов.'])->label(false) .
+                ->textArea(['rows' => 8, 'placeholder' => 'Текст вашего поста, рекомендуется не более 2 000 символов.'])->label(false) .
             $form->field($model, 'verifyCode')
                 ->widget(Captcha::className(), [
                     'template' =>
-                        '<div class="row">
+'<div class="row">
     <div class="col-xs-2">{image}</div>
     <div class="col-xs-3">{input}</div>
     <div class="col-xs-2"></div>
@@ -56,3 +61,5 @@ $this->params['breadcrumbs'] = ['label' => 'Отправить пост'];
     </div>
 
 <?php endif; ?>
+<br>
+<br>

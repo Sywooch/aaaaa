@@ -53,8 +53,6 @@ AppAsset::register($this);
 
     <?= $content ?>
 
-    <br><br>
-
     <footer class="footer">
         <p>&copy; <?= Yii::$app->params['name'] ?>, 2015-<?= date('Y') ?>. Все права защищены.</p>
     </footer>

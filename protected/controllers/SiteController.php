@@ -139,7 +139,7 @@ class SiteController extends Controller
         $posts = new ActiveDataProvider([
             'query' => Post::find()->with(['tags', 'votes'])
                 ->where('visible = 1')->orderBy(['created' => SORT_DESC]),
-            'pagination' => ['pageSize' => 10],
+            'pagination' => ['pageSize' => 2],
         ]);
 
         return $this->render('index', [

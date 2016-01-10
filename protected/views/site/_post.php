@@ -7,17 +7,23 @@ use yii\widgets\Pjax;
 ?>
 <div class="post">
     <div class="row">
-        <div class="col-xs-3">№<?= $model->id ?></div>
-        <div class="col-xs-6"><?= $model->created ?></div>
+        <div class="col-xs-3">№
+            <a href="/post/<?= $model->id ?>" title="Пост № <?= $model->id ?> - <?= Yii::$app->params['name'] ?>">
+                <?= $model->id ?>
+            </a>
+        </div>
+        <div class="col-xs-6 text-muted"><?= $model->created ?></div>
         <div class="col-xs-3">
-            <?php Pjax::begin(['enablePushState' => false,
-//                'timeout' => 10000,
-            ]); ?>
+            <?php Pjax::begin(['enablePushState' => false, 'timeout' => 10000]); ?>
             <div class="pull-right">
-                <a href="?post_id=<?= $model->id ?>"
-                    ><span class="vote glyphicon glyphicon-thumbs-up text-success"><?= $model->getGood() ?></span></a>
-                <a href="?post_id=-<?= $model->id ?>"
-                    ><span class="vote glyphicon glyphicon-thumbs-down text-danger"><?= $model->getBad() ?></span></a>
+                <a title="Полезный"
+                   href="?post_id=<?= $model->id .
+                    (Yii::$app->request->get("page") ? "&page=".Yii::$app->request->get("page") : "")
+                ?>"><span class="vote glyphicon glyphicon-thumbs-up text-success"><?= $model->getGood() ?></span></a>
+                <a title="Бесполезный"
+                   href="?post_id=-<?= $model->id .
+                    (Yii::$app->request->get("page") ? "&page=".Yii::$app->request->get("page") : "")
+                ?>"><span class="vote glyphicon glyphicon-thumbs-down text-danger"><?= $model->getBad() ?></span></a>
             </div>
             <?php Pjax::end(); ?>
         </div>

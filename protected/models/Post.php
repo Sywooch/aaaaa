@@ -5,8 +5,6 @@ use yii\db\ActiveRecord;
 
 class Post extends ActiveRecord
 {
-//    public $tags;
-
     public static function tableName()
     {
         return 'post';
