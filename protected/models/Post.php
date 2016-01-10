@@ -5,7 +5,7 @@ use yii\db\ActiveRecord;
 
 class Post extends ActiveRecord
 {
-    public $tags;
+//    public $tags;
 
     public static function tableName()
     {
@@ -35,6 +35,20 @@ class Post extends ActiveRecord
     {
         return $this->hasMany(Tag::className(), ['id' => 'tag_id'])
             ->viaTable('tag4post', ['post_id' => 'id']);
+    }
+
+    public function getVotes()
+    {
+        return $this->hasMany(Vote::className(), ['post_id' => 'id']);
+    }
+
+    public function getGood()
+    {
+        return count($this->getVotes()->where('rating=1')->all());
+    }
+    public function getBad()
+    {
+        return count($this->getVotes()->where('rating=-1')->all());
     }
 
     public function beforeValidate()

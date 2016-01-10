@@ -27,7 +27,7 @@ echo ListView::widget([
     'dataProvider' => $posts,
     'layout' => '{items}{pager}',
     'itemView' => '_moderate',
-    'viewParams' => ['post' => $post],
+//    'viewParams' => ['post' => $post],
     'emptyText' => 'Нет новых постов.',
 ]);
 

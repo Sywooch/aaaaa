@@ -5,6 +5,9 @@ use yii\db\ActiveRecord;
 
 class Moderation extends ActiveRecord
 {
+    const SCENARIO_CREATE = 'create';
+//    const SCENARIO_UPDATE = 'update';
+
     public $tags;
     public $verifyCode;
 
@@ -21,7 +24,7 @@ class Moderation extends ActiveRecord
             [['created'], 'date', 'format' => 'yyyy-M-d H:m:s'],
             [['created'], 'default', 'value' => date("Y-m-d H:i:s")],
             [['text', 'created', 'ip', 'user_agent',], 'required'],
-            ['verifyCode', 'captcha'],
+            ['verifyCode', 'captcha', 'on' => self::SCENARIO_CREATE ],
         ];
     }
 

@@ -41,10 +41,10 @@ class SiteController extends Controller
                     [
                         'actions' => ['index', 'add', 'captcha', 'login', 'error'],
                         'allow' => true,
-                        'roles' => ['?'],
+                        //'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['logout', 'moderate'],
+                        'actions' => ['logout', 'moderate', 'delete'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -83,8 +83,16 @@ class SiteController extends Controller
 
     public function actionModerate()
     {
-        $post = new Post();
-        if ($post->load(Yii::$app->request->post())) {
+        $data = Yii::$app->request->post('Moderation');
+        $model = Moderation::findOne((int)$data['id']);
+
+        if ($model && $model->load(Yii::$app->request->post(), $model->formName()) && $model->validate()) {
+            $post = new Post();
+            $post->attributes = $model->attributes;
+            $post->visible = true;
+            $post->hash = $model->hash;
+            $post->tags = Yii::$app->request->post($model->formName(), ['tags'=>[]])['tags'];
+
             if ($post->save()) {
                 foreach ($post->tags as $tag) {
                     $modelTag = Tag::add($tag);
@@ -92,33 +100,60 @@ class SiteController extends Controller
                         $post->link('tags', $modelTag);
                     }
                 }
-                Moderation::deleteAll('hash = :hash', [':hash' => $post->hash]);
-                Yii::$app->session->setFlash('success');
+                $model->delete();
             }
         }
 
         $posts = new ActiveDataProvider([
-            'query' => Moderation::find()->orderBy(['created' => SORT_DESC]), //->with('tags')
+            'query' => Moderation::find()->orderBy(['created' => SORT_DESC]),
             'pagination' => ['pageSize' => 10],
         ]);
 
-        return $this->render('moderate', ['posts' => $posts, 'post' => $post]);
+        return $this->render('moderate', ['posts' => $posts, 'model' => $model]);
+    }
+
+    public function actionDelete()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $id = Yii::$app->request->post('id');
+        $ok = Moderation::deleteAll('id = :id', [':id' => $id]);
+        return ['success' => $ok];
     }
 
     public function actionIndex()
     {
-        return $this->render('test', [
+        $post_id = (int) Yii::$app->request->get('post_id', 0);
+        if ($post_id != 0) {
+            try {
+                $vote = new Vote();
+                $vote->post_id = abs($post_id);
+                $vote->rating = $post_id > 0 ? 1 : -1;
+                $vote->ip = Yii::$app->request->getUserIP();
+                $vote->user_agent = Yii::$app->request->getUserAgent();
+                $vote->created = date("Y-m-d H:i:s");
+                $vote->save();
+
+            } catch (Exception $e) { }
+        }
+
+        $posts = new ActiveDataProvider([
+            'query' => Post::find()->with(['tags', 'votes'])
+                ->where('visible = 1')->orderBy(['created' => SORT_DESC]),
+            'pagination' => ['pageSize' => 10],
+        ]);
+
+        return $this->render('index', [
+            'posts' => $posts,
 //            'title' => $title,
 //            'description' => $description,
 //            'keywords' => $keywords,
-//            'city' => $city,
-//            'favorite' => $favorite,
         ]);
     }
 
     public function actionAdd()
     {
         $model = new Moderation();
+        $model->scenario = Moderation::SCENARIO_CREATE;
         if ($model->load(Yii::$app->request->post())) {
             $model->loadDefaultValues();
             $model->ip = Yii::$app->request->getUserIP();
