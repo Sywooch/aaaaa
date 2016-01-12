@@ -1,10 +1,12 @@
 <?php
+$is_console = PHP_SAPI == 'cli' || (!isset($_SERVER['DOCUMENT_ROOT']) && !isset($_SERVER['REQUEST_URI']));
+
 return $config = [
     'id' => 'aaaaakz',
     'language' => 'ru',
     'basePath' => __DIR__ . '/protected',
     'components' => [
-        'user' => [
+        'user' => $is_console ? ['class' => ''] : [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
         ],
@@ -19,11 +21,13 @@ return $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                '/q/<question_id:[\d]+>-<url:[\S\s]+>.html' => 'site/question',
-                '/page-<param:[^\.]+>.html' => 'site/page',
-                '/<file:[\w_-]+>.xml' => 'site/sitemap',
-                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
+                '/search' => 'site/index',
                 '/<action:[\w-]+>' => 'site/<action>',
+                '/post/<post_id:[\d]+>' => 'site/post',
+                '/<file:[\w_-]+>.xml' => 'site/sitemap',
+//                '/q/<question_id:[\d]+>-<url:[\S\s]+>.html' => 'site/question',
+//                '/page-<param:[^\.]+>.html' => 'site/page',
+//                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
             ],
         ],
         'request' => [

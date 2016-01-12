@@ -34,7 +34,7 @@ use yii\widgets\Pjax;
             <br>--
             <br>
             <?php foreach($model->tags as $tag): ?>
-                <?= Html::a("#" . $tag->name, Url::toRoute('tag/'.$tag->name)) ?>
+                <?= Html::a("#" . $tag->name, Url::toRoute(['/', 'query' => "#" . $tag->name])) ?>
             <?php endforeach;?>
         <?php endif; ?>
     </p>

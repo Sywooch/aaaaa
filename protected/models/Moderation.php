@@ -6,7 +6,6 @@ use yii\db\ActiveRecord;
 class Moderation extends ActiveRecord
 {
     const SCENARIO_CREATE = 'create';
-//    const SCENARIO_UPDATE = 'update';
 
     public $tags;
     public $verifyCode;
@@ -19,12 +18,13 @@ class Moderation extends ActiveRecord
     public function rules()
     {
         return [
-            [['ip', 'user_agent',], 'string', 'max' => 255],
+            [['text', 'ip', 'user_agent'], 'filter', 'filter'=>'strip_tags'],
+            [['ip', 'user_agent'], 'string', 'max' => 255],
             [['text'], 'string', 'min' => 4, 'max' => 65535],
             [['created'], 'date', 'format' => 'yyyy-M-d H:m:s'],
             [['created'], 'default', 'value' => date("Y-m-d H:i:s")],
-            [['text', 'created', 'ip', 'user_agent',], 'required'],
-            ['verifyCode', 'captcha', 'on' => self::SCENARIO_CREATE ],
+            [['text', 'hash', 'created', 'ip', 'user_agent'], 'required'],
+            ['verifyCode', 'captcha', 'on' => self::SCENARIO_CREATE],
         ];
     }
 

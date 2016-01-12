@@ -18,17 +18,10 @@ AppAsset::register($this);
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title><?= Html::encode($this->title) ?></title>
-
-    <meta property="og:type" content="article">
-    <meta property="og:title" content="Цитата #437395">
-    <meta property="og:site_name" content="Цитатник Рунета">
-    <meta property="og:description" content="<?php /*echo Html::encode($this->description);*/ ?>">
-    <meta property="og:image" content="<?= Yii::$app->params['siteUrl']; ?>img/url-fb.gif">
-
-    <link rel="alternate"
+    <!--link rel="alternate"
           type="application/rss+xml"
           title="<?= Html::encode($this->title) ?>"
-          href="<?= Yii::$app->params['siteUrl']; ?>rss/">
+          href="<?= Yii::$app->params['siteUrl']; ?>rss/"-->
 
     <?= Html::csrfMetaTags() ?>
     <?php $this->head() ?>
@@ -49,6 +42,26 @@ AppAsset::register($this);
             </ul>
         </nav>
         <h1 class="text-muted"><?= Yii::$app->params['name'] ?></h1>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-6">
+            <form action="/search" method="get" class="form-horizontal">
+                <input name="query" class="form-control" role="search"
+                       value="<?= Html::encode($this->context->query) ?>"
+                       placeholder="Поиск поста по фразе или тегу...">
+            </form>
+            <span class=" text-nowrap">
+                Всего <b><?= \app\models\Post::find()->count() ?></b>,
+                сегодня <b><?= 0 ?></b>,
+                на модерации <b><?= \app\models\Moderation::find()->count() ?></b>
+            </span>
+        </div>
+        <div class="col-xs-6">{...}</div>
     </div>
 
     <?= $content ?>

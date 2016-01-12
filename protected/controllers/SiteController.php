@@ -13,11 +13,12 @@ use yii\web\Controller;
 use yii\web\HttpException;
 use yii\web\Response;
 use yii\data\ActiveDataProvider;
-use yii\helpers\Html;
-use yii\db\Query;
+use yii\helpers\ArrayHelper;
 
 class SiteController extends Controller
 {
+    public $query = null;
+
     public function actions()
     {
         return [
@@ -39,7 +40,7 @@ class SiteController extends Controller
 //                'only' => ['logout'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'add', 'captcha', 'login', 'error'],
+                        'actions' => ['index', 'post', 'search', 'add', 'best', 'random', 'captcha', 'login', 'error'],
                         'allow' => true,
                         //'roles' => ['?'],
                     ],
@@ -90,14 +91,15 @@ class SiteController extends Controller
             $post = new Post();
             $post->attributes = $model->attributes;
             $post->visible = true;
-            $post->hash = $model->hash;
-            $post->tags = Yii::$app->request->post($model->formName(), ['tags'=>[]])['tags'];
+            $tags = Yii::$app->request->post($model->formName(), ['tags'=>[]])['tags'];
 
             if ($post->save()) {
-                foreach ($post->tags as $tag) {
-                    $modelTag = Tag::add($tag);
-                    if ($modelTag) {
-                        $post->link('tags', $modelTag);
+                if (! empty($tags)) {
+                    foreach ($tags as $tag) {
+                        $modelTag = Tag::add($tag);
+                        if ($modelTag) {
+                            $post->link('tags', $modelTag);
+                        }
                     }
                 }
                 $model->delete();
@@ -120,36 +122,6 @@ class SiteController extends Controller
         return ['success' => $ok];
     }
 
-    public function actionIndex()
-    {
-        $post_id = (int) Yii::$app->request->get('post_id', 0);
-        if ($post_id != 0) {
-            try {
-                $vote = new Vote();
-                $vote->post_id = abs($post_id);
-                $vote->rating = $post_id > 0 ? 1 : -1;
-                $vote->ip = Yii::$app->request->getUserIP();
-                $vote->user_agent = Yii::$app->request->getUserAgent();
-                $vote->created = date("Y-m-d H:i:s");
-                $vote->save();
-
-            } catch (Exception $e) { }
-        }
-
-        $posts = new ActiveDataProvider([
-            'query' => Post::find()->with(['tags', 'votes'])
-                ->where('visible = 1')->orderBy(['created' => SORT_DESC]),
-            'pagination' => ['pageSize' => 2],
-        ]);
-
-        return $this->render('index', [
-            'posts' => $posts,
-//            'title' => $title,
-//            'description' => $description,
-//            'keywords' => $keywords,
-        ]);
-    }
-
     public function actionAdd()
     {
         $model = new Moderation();
@@ -167,11 +139,76 @@ class SiteController extends Controller
         return $this->render('add', ['model' => $model]);
     }
 
+    public function actionIndex($query = null)
+    {
+        $this->query = $query;
+        $post_id = (int) Yii::$app->request->get('post_id', 0);
+        if ($post_id != 0) {
+            try {
+                $vote = new Vote();
+                $vote->post_id = abs($post_id);
+                $vote->rating = $post_id > 0 ? 1 : -1;
+                $vote->ip = Yii::$app->request->getUserIP();
+                $vote->user_agent = Yii::$app->request->getUserAgent();
+                $vote->created = date("Y-m-d H:i:s");
+                $vote->save();
+
+            } catch (Exception $e) { }
+        }
+
+        $posts = new ActiveDataProvider([
+            'query' => Post::find()
+                ->joinWith(['tags', 'votes'])
+                ->where('visible = 1')
+                ->andFilterWhere(['or',
+                    ['like', "concat('#', tag.name)", $query],
+                    ['like', 'post.text', $query]
+                ])
+                ->orderBy(['created' => SORT_DESC]),
+            'pagination' => ['pageSize' => 10],
+        ]);
+
+        $aKeywords = [];
+        foreach ($posts->getModels() as $pagePost) {
+            if (!empty($pagePost->tags)) {
+                foreach ($pagePost->tags as $tag) {
+                    $aKeywords[] = ArrayHelper::getValue($tag, 'name');
+                }
+            }
+        }
+
+        $keywords = implode(', ', array_unique($aKeywords));
+        $description = '';
+        $title = '';
+
+        return $this->render('index', [
+            'posts' => $posts,
+            'title' => $title,
+            'keywords' => $keywords,
+            'description' => $description,
+        ]);
+    }
+
+    public function actionBest()
+    {
+        return 2;
+    }
+
+    public function actionRandom()
+    {
+        return 3;
+    }
+//
+//    public function actionSearch($query)
+//    {
+//        return $query;
+//    }
+
     public function actionPost($post_id)
     {
         $post = Post::findOne((int)$post_id);
         if (!$post) {
-            throw new Exception('!');
+            $this->redirect('/');
         }
 
         return $this->render('post', ['post' => $post]);

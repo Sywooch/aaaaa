@@ -17,7 +17,7 @@ class Post extends ActiveRecord
             [['text'], 'string', 'min' => 4, 'max' => 65535],
             [['created'], 'date', 'format' => 'yyyy-M-d H:m:s'],
             [['created'], 'default', 'value' => date("Y-m-d H:i:s")],
-            [['text', 'tags', 'ip', 'user_agent', 'created',], 'required'],
+            [['text', 'hash', 'ip', 'user_agent', 'created',], 'required'],
         ];
     }
 
