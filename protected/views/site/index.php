@@ -9,6 +9,8 @@ $this->registerMetaTag(['name' => 'og:description', 'content' => $description ])
 $this->registerMetaTag(['name' => 'og:keywords', 'content' => $keywords ]);
 $this->title = '';
 
+echo $this->render('_header');
+
 echo ListView::widget([
     'dataProvider' => $posts,
     'layout' => '{items}{pager}',

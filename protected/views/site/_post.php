@@ -4,7 +4,9 @@ use yii\helpers\Url;
 use yii\widgets\Pjax;
 
 /* @var $model \app\models\Post */
+
 ?>
+
 <div class="post">
     <div class="row">
         <div class="col-xs-3">№

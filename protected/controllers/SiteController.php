@@ -8,6 +8,7 @@ use app\models\Tag;
 use app\models\Vote;
 use Yii;
 use yii\base\Exception;
+use yii\db\Query;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\HttpException;
@@ -40,7 +41,7 @@ class SiteController extends Controller
 //                'only' => ['logout'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'post', 'search', 'add', 'best', 'random', 'captcha', 'login', 'error'],
+                        'actions' => ['index', 'post', 'search', 'add', 'best', 'random', 'captcha', 'login', 'error', 'sitemap'],
                         'allow' => true,
                         //'roles' => ['?'],
                     ],
@@ -142,6 +143,14 @@ class SiteController extends Controller
     public function actionIndex($query = null)
     {
         $this->query = $query;
+        $queryTag = "";
+        $queryText = "";
+        if (preg_match('/^#([\S]+)/i', $this->query, $queryTag)) {
+            $queryTag = $queryTag[1];
+        } else {
+            $queryText = $this->query;
+        }
+
         $post_id = (int) Yii::$app->request->get('post_id', 0);
         if ($post_id != 0) {
             try {
@@ -158,14 +167,21 @@ class SiteController extends Controller
 
         $posts = new ActiveDataProvider([
             'query' => Post::find()
-                ->joinWith(['tags', 'votes'])
+                ->with(['tags', 'votes'])
                 ->where('visible = 1')
-                ->andFilterWhere(['or',
-                    ['like', "concat('#', tag.name)", $query],
-                    ['like', 'post.text', $query]
+                ->andFilterWhere([
+                    'in',
+                    'post.id',
+                    (new Query())
+                        ->select('tag4post.post_id')
+                        ->from('tag4post')
+                        ->innerJoin('tag', 'tag.id=tag4post.tag_id')
+                        ->andFilterWhere(['like', 'tag.name', $queryTag])
+                        ->distinct()
                 ])
+                ->andFilterWhere(['like', 'post.text', $queryText])
                 ->orderBy(['created' => SORT_DESC]),
-            'pagination' => ['pageSize' => 10],
+            'pagination' => ['pageSize' => 3],
         ]);
 
         $aKeywords = [];
@@ -198,11 +214,6 @@ class SiteController extends Controller
     {
         return 3;
     }
-//
-//    public function actionSearch($query)
-//    {
-//        return $query;
-//    }
 
     public function actionPost($post_id)
     {
@@ -215,81 +226,27 @@ class SiteController extends Controller
     }
 
 
-//    public function actionSitemap($file)
-//    {
-//        header('Cache-Control: no-cache, must-revalidate');
-//        header('Content-type: text/xml; charset=utf-8');
-//
-//        switch ($file) {
-//            case 'sitemap':
-//                $sitemaps = [];
-//                $categories = Offer::find()->distinct()->select('category_id')->orderBy('category_id')->all();
-//                if (!empty($categories)) {
-//                    $lastmod = date("Y-m-d");
-//                    foreach ($categories as $category) {
-//                        $sitemaps[] = [
-//                            'loc' => Yii::$app->params['siteUrl'] . $category->category_id . '.xml',
-//                            'lastmod' => $lastmod,
-//                        ];
-//                    }
-//                }
-//                return $this->renderPartial('xml_sitemapindex', ['sitemaps' => $sitemaps]);
-//                exit;
-//                break;
-//
-//            case 'main':
-//                $items = [];
-//                $categories = Category::find()->all();
-//                if (!empty($categories)) {
-//                    $lastmod = date("Y-m-d");
-//                    foreach ($categories as $category) {
-//                        $cities = City::find()->all();
-//                        foreach ($cities as $city) {
-//                            $items[] = [
-//                                'loc' => str_replace(
-//                                    "&",
-//                                    "&amp;",
-//                                    Yii::$app->params['siteUrl'] . $city->url . "/" . $category->id . $category->url
-//                                ),
-//                                'changefreq' => 'daily',
-//                                'lastmod' => $lastmod,
-//                                'priority' => '1',
-//                            ];
-//                        }
-//                    }
-//                }
-////                return $this->renderPartial('xml_sitemap', ['items' => $items]);
-//                break;
-//
-//            default:
-//                $items = [];
-//                $offers = Offer::find()->where('category_id = :category_id', [':category_id' => $file])->all();
-//                if (!empty($offers)) {
-//                    $lastmod = date("Y-m-d");
-//                    foreach ($offers as $offer) {
-//                        $cities = City::find()->all();
-//                        foreach ($cities as $city) {
-//                            $items[] = [
-//                                'loc' => str_replace(
-//                                    "&",
-//                                    "&amp;",
-//                                    Yii::$app->params['siteUrl'] . $city->url . "/" .
-//                                    $offer->category_id . $offer->category->url . "/" .
-//                                    $offer->id . "-" . $offer->seo_url . ".html"
-//                                ),
-//                                'lastmod' => $lastmod,
-//                                'changefreq' => 'daily',
-//                                'priority' => '0.8',
-//                            ];
-//                        }
-//                    }
-//                }
-////                return $this->renderPartial('xml_sitemap', ['items' => $items]);
-//                break;
-//        }
-//        return $this->renderPartial('xml_sitemap', ['items' => $items]);
-//    }
-//
+    public function actionSitemap($file)
+    {
+        header('Cache-Control: no-cache, must-revalidate');
+        header('Content-type: text/xml; charset=utf-8');
+
+        $items = [];
+        $posts = Post::find()->where('visible = 1')->all();
+        if (!empty($posts)) {
+            foreach ($posts as $post) {
+                $items[] = [
+                    'loc' => Yii::$app->params['siteUrl'] . "post/" . $post->id,
+                    'lastmod' => $post->created, //(new \DateTime())->format(),
+                    'changefreq' => 'daily',
+                    'priority' => '1',
+                ];
+            }
+        }
+
+        return $this->renderPartial('xml_sitemap', ['items' => $items]);
+    }
+
 //    public function actionPage($param)
 //    {
 //        if (!in_array($param, ['about','garanty','delivery','payments','contacts'])) {

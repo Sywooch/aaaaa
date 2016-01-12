@@ -21,7 +21,6 @@ return $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                '/search' => 'site/index',
                 '/<action:[\w-]+>' => 'site/<action>',
                 '/post/<post_id:[\d]+>' => 'site/post',
                 '/<file:[\w_-]+>.xml' => 'site/sitemap',
@@ -36,7 +35,7 @@ return $config = [
     ],
     'params' => [
         'adminEmail' => 'admin@aaaaa.kz',
-        'name' => 'Aaaaa.KZ',
+        'name' => 'A-a-a-a-a!kz',
         'siteUrl' => 'http://aaaaa.kz/',
     ],
 ];

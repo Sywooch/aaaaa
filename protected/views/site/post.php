@@ -14,4 +14,10 @@ $this->registerMetaTag(['name' => 'og:description', 'content' => Html::encode(Ar
 $this->registerMetaTag(['name' => 'og:keywords', 'content' => implode(', ', ArrayHelper::map(ArrayHelper::getValue($post, 'tags'), 'id', 'name')) ]);
 $this->registerMetaTag(['name' => 'og:image', 'content' => Yii::$app->params['siteUrl'] . 'img/url-fb.gif' ]);
 
+echo $this->render('_header');
+
+echo '{ads}';
+
 echo $this->render('_post', ['model' => $post]);
+
+echo '{ads}';
