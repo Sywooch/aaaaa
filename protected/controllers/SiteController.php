@@ -8,8 +8,10 @@ use app\models\Tag;
 use app\models\Vote;
 use Yii;
 use yii\base\Exception;
+use yii\db\Expression;
 use yii\db\Query;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\HttpException;
 use yii\web\Response;
@@ -53,15 +55,20 @@ class SiteController extends Controller
                     ],
                 ],
             ],
-//            'verbs' => [
-//                'class' => VerbFilter::className(),
-//                'actions' => [
-//                    'logout' => ['post'],
-//                ],
-//            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['post'],
+                    'logout' => ['post'],
+                ],
+            ],
         ];
     }
 
+    /**
+     * Страница входа в систему модерирования записей
+     * @return string|Response
+     */
     public function actionLogin()
     {
         if (!\Yii::$app->user->isGuest) {
@@ -78,20 +85,30 @@ class SiteController extends Controller
         }
     }
 
+    /**
+     * Выход из системы модерирования
+     * @return Response
+     */
     public function actionLogout()
     {
         Yii::$app->user->logout();
         return $this->goHome();
     }
 
+    /**
+     * Страница модерирования постов
+     * @return string|Response
+     */
     public function actionModerate()
     {
         $data = Yii::$app->request->post('Moderation');
         $model = Moderation::findOne((int)$data['id']);
 
-        if ($model && $model->load(Yii::$app->request->post(), $model->formName()) && $model->validate()) {
+        if ($model && $model->load(Yii::$app->request->post(), $model->formName()) && ($saveHtmlData = $model->text) && $model->validate()) {
             $post = new Post();
             $post->attributes = $model->attributes;
+            $post->text = $saveHtmlData; // сохранять HTML в обход фильтра в модели Moderation
+            $post->hash = md5($saveHtmlData);
             $post->visible = true;
             $tags = Yii::$app->request->post($model->formName(), ['tags'=>[]])['tags'];
 
@@ -116,6 +133,10 @@ class SiteController extends Controller
         return $this->render('moderate', ['posts' => $posts, 'model' => $model]);
     }
 
+    /**
+     * Удаление записи
+     * @return array
+     */
     public function actionDelete()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -124,6 +145,10 @@ class SiteController extends Controller
         return ['success' => $ok];
     }
 
+    /**
+     * Добавление материала на сайт, в раздел на модерацию
+     * @return string
+     */
     public function actionAdd()
     {
         $model = new Moderation();
@@ -141,7 +166,13 @@ class SiteController extends Controller
         return $this->render('add', ['model' => $model]);
     }
 
-    public function actionIndex($query = null)
+    /**
+     * Главная страница с записями
+     * @param null $query - строка поиска
+     * @param bool|false $random - случайные записи
+     * @return string
+     */
+    public function actionIndex($query = null, $random = false)
     {
         $this->query = $query;
         $queryText = "";
@@ -185,7 +216,7 @@ class SiteController extends Controller
                 ->where('visible = 1')
                 ->andFilterWhere(['in', 'post.id', $queryPostsByTag])
                 ->andFilterWhere(['like', 'post.text', $queryText])
-                ->orderBy(['created' => SORT_DESC]),
+                ->orderBy($random ? (new Expression('rand()')) : ['created' => SORT_DESC]),
             'pagination' => ['pageSize' => self::PAGE_SIZE],
         ]);
 
@@ -210,16 +241,11 @@ class SiteController extends Controller
         ]);
     }
 
-    public function actionBest()
-    {
-        return 2;
-    }
-
-    public function actionRandom()
-    {
-        return 3;
-    }
-
+    /**
+     * Страница с одним постом
+     * @param $post_id - идентификатор поста
+     * @return string
+     */
     public function actionPost($post_id)
     {
         $post = Post::findOne((int)$post_id);
@@ -231,7 +257,8 @@ class SiteController extends Controller
     }
 
     /**
-     * @param $file
+     * Карта сайта
+     * @param $file - имя карты сайта
      * @return string
      */
     public function actionSitemap($file)

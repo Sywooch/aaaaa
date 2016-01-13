@@ -42,11 +42,15 @@ class Post extends ActiveRecord
 
     public function getGood()
     {
-        return count($this->getVotes()->where('rating=1')->all());
+        return $this->getVotes()->where('rating=1')->count();
     }
     public function getBad()
     {
-        return count($this->getVotes()->where('rating=-1')->all());
+        return $this->getVotes()->where('rating=-1')->count();
+    }
+    public function getRating()
+    {
+        return $this->getGood() - $this->getBad();
     }
 
     public function beforeValidate()

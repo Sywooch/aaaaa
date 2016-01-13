@@ -35,7 +35,7 @@ AppAsset::register($this);
             <ul class="nav nav-pills pull-right">
                 <li role="presentation"><a href="/">Новые</a></li>
 <!--                <li role="presentation"><a href="/best">Лучшие</a></li>-->
-<!--                <li role="presentation"><a href="/random">Случайные</a></li>-->
+                <li role="presentation"><a href="/random">Случайные</a></li>
                 <li role="presentation" class="active">
                     <a href="/add"><span class="glyphicon glyphicon-plus"></span> Добавить</a>
                 </li>
@@ -48,6 +48,7 @@ AppAsset::register($this);
 
     <footer class="footer">
         <p>&copy; <?= Yii::$app->params['name'] ?>, 2015-<?= date('Y') ?>. Все права защищены.</p>
+        <p>Мнение администратора может не совпадать с мнением автора поста.</p>
     </footer>
 
 </div> <!-- /container -->

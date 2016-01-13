@@ -8,7 +8,7 @@ use yii\helpers\Url;
     <div class="col-xs-12">
     </div>
 </div>
-<div class="row">
+<div class="row" style="margin-bottom: 30px;">
     <div class="col-xs-6">
         <form action="/" method="get" class="form-horizontal">
             <input name="query" class="form-control" role="search"
@@ -17,7 +17,7 @@ use yii\helpers\Url;
         </form>
         <span class="text-nowrap">
             Всего <b><?= \app\models\Post::find()->where('visible=1')->count() ?></b>,
-            сегодня <b><?= 0 ?></b>,
+            сегодня <b><?= \app\models\Post::find()->where('visible=1 and created like :d', [':d' => date("Y-m-d")."%"])->count() ?></b>,
             на модерации <b><?= \app\models\Moderation::find()->count() ?></b>
         </span>
 
@@ -29,7 +29,7 @@ use yii\helpers\Url;
                 echo Html::a(
                     "#" . $tag,
                     Url::toRoute(['/', 'query' => "#" . $tag]),
-                    ['style' => "font-size:{$weight}pt; padding: 4px;"]
+                    ['style' => "display: inline-block; padding:0 4px; font-size:{$weight}pt;"]
                 );
             }
             ?>

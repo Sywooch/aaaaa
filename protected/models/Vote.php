@@ -22,7 +22,7 @@ class Vote extends ActiveRecord
             ],
             [['ip', 'user_agent',], 'string', 'max' => 255],
             [['created'], 'date', 'format' => 'yyyy-M-d H:m:s'],
-//            ['post_id, ip, user_agent', 'unique'],
+//            ['post_id, ip, user_agent', 'unique'], // уникальлность на уровне бд
             [['rating'], 'default', 'value' => 0],
             [['created'], 'default', 'value' => date("Y-m-d H:i:s")],
             [['post_id', 'rating', 'ip', 'user_agent', 'created',], 'required'],

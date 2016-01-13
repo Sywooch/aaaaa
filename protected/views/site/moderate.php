@@ -21,8 +21,16 @@ $this->registerMetaTag([
 ]);
 $this->title = 'На ' . Yii::$app->params['name'] . ' Вы можете задать любой вопрос про IPhone';
 
-$this->params['breadcrumbs'] = ['label' => 'Задать вопрос'];
+?>
+    <div class="alert alert-info">
+        <b>Синтаксис JSON для встраиваемых объектов:</b><br>
+        Изображение - {"type":"image", "src":"полный URL адрес", "alt":"Описание"}<br>
+        Видеоролик - {"type":"video", "src":"полный URL адрес", "alt":"Описание"}<br>
+        Аудиофайл - {"type":"audio", "src":"полный URL адрес", "alt":"Описание"}<br>
+        Гиперссылка - {"type":"link", "src":"полный URL адрес", "alt":"Описание"}<br>
 
+    </div>
+<?php
 echo ListView::widget([
     'dataProvider' => $posts,
     'layout' => '{items}{pager}',

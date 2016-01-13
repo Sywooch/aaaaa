@@ -18,11 +18,17 @@ use yii\widgets\Pjax;
         <div class="col-xs-3">
             <?php Pjax::begin(['enablePushState' => false, 'timeout' => 10000]); ?>
             <div class="pull-right">
-                <a title="Полезный"
+                <span class="text-primary" title="Текущий рейтинг поста">
+                    <?= $model->getRating() ?>
+                </span>
+                &nbsp; : &nbsp;
+                <a title="Повысить рейтинг
+(полезный пост)"
                    href="?post_id=<?= $model->id .
                     (Yii::$app->request->get("page") ? "&page=".Yii::$app->request->get("page") : "")
                 ?>"><span class="vote glyphicon glyphicon-thumbs-up text-success"><?= $model->getGood() ?></span></a>
-                <a title="Бесполезный"
+                <a title="Понизить рейтинг
+(бесполезный пост)"
                    href="?post_id=-<?= $model->id .
                     (Yii::$app->request->get("page") ? "&page=".Yii::$app->request->get("page") : "")
                 ?>"><span class="vote glyphicon glyphicon-thumbs-down text-danger"><?= $model->getBad() ?></span></a>
@@ -31,7 +37,13 @@ use yii\widgets\Pjax;
         </div>
     </div>
     <p>
-        <?= str_replace("\n", "<br>", Html::encode($model->text)) ?>
+        <?php
+        if ($data = json_decode($model->text)) {
+            // анализ и вывод соответствующего объекта: картинка, галлерея, файл, музыка, видео, гиперссылка
+        } else {
+            echo str_replace("\n", "<br>", $model->text); /*Html::encode()*/  // plain text, not json
+        }
+        ?>
         <?php if (!empty($model->tags)): ?>
             <br>--
             <br>

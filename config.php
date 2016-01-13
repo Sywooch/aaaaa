@@ -21,12 +21,10 @@ return $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                '/<random:random>' => 'site/index',
                 '/<action:[\w-]+>' => 'site/<action>',
                 '/post/<post_id:[\d]+>' => 'site/post',
                 '/<file:[\w_-]+>.xml' => 'site/sitemap',
-//                '/q/<question_id:[\d]+>-<url:[\S\s]+>.html' => 'site/question',
-//                '/page-<param:[^\.]+>.html' => 'site/page',
-//                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
             ],
         ],
         'request' => [
