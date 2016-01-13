@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /random
+
+User-agent: Yandex
+Disallow: /random
+
+Host: aaaaa.kz
+Sitemap: http://aaaaa.kz/sitemap.xml

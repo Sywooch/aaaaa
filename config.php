@@ -34,6 +34,7 @@ return $config = [
     'params' => [
         'adminEmail' => 'admin@aaaaa.kz',
         'name' => 'A-a-a-a-a!kz',
+        'siteName' => 'Сборник свободного народного творчества',
         'siteUrl' => 'http://aaaaa.kz/',
     ],
 ];

@@ -1,25 +1,10 @@
 <?php
-
-use yii\bootstrap\ActiveForm;
-use yii\helpers\ArrayHelper;
-use yii\helpers\Html;
 use yii\widgets\ListView;
-use kartik\select2\Select2;
-use app\models\Tag;
 
 /* @var $this yii\web\View */
-/* @var $form yii\bootstrap\ActiveForm */
-/* @var $model app\models\Question */
+/* @var $posts \yii\data\ActiveDataProvider */
 
-$this->registerMetaTag([
-    'name' => 'description',
-    'content' => 'Вы можете задать любой вопрос на ' . Yii::$app->params['name'] . '.',
-]);
-$this->registerMetaTag([
-    'name' => 'keywords',
-    'content' => 'Спросить, задать вопрос, получить ответ, ' . Yii::$app->params['name'] . ', iphone, проблема, не работает, как сделать',
-]);
-$this->title = 'На ' . Yii::$app->params['name'] . ' Вы можете задать любой вопрос про IPhone';
+$this->title = 'Модерирование записей на ' . Yii::$app->params['name'];
 
 ?>
     <div class="alert alert-info">
@@ -28,7 +13,6 @@ $this->title = 'На ' . Yii::$app->params['name'] . ' Вы можете зад�
         Видеоролик - {"type":"video", "src":"полный URL адрес", "alt":"Описание"}<br>
         Аудиофайл - {"type":"audio", "src":"полный URL адрес", "alt":"Описание"}<br>
         Гиперссылка - {"type":"link", "src":"полный URL адрес", "alt":"Описание"}<br>
-
     </div>
 <?php
 echo ListView::widget([
