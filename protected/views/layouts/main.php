@@ -34,8 +34,8 @@ AppAsset::register($this);
         <nav>
             <ul class="nav nav-pills pull-right">
                 <li role="presentation"><a href="/">Новые</a></li>
-                <li role="presentation"><a href="/best">Лучшие</a></li>
-                <li role="presentation"><a href="/random">Случайные</a></li>
+<!--                <li role="presentation"><a href="/best">Лучшие</a></li>-->
+<!--                <li role="presentation"><a href="/random">Случайные</a></li>-->
                 <li role="presentation" class="active">
                     <a href="/add"><span class="glyphicon glyphicon-plus"></span> Добавить</a>
                 </li>

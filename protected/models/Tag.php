@@ -64,7 +64,7 @@ class Tag extends ActiveRecord
         $minFrequency = 0;
         $maxFrequency = 0;
         foreach ($models as $model) {
-            $weight = count($model->questions);
+            $weight = count($model->posts);
             $minFrequency = $minFrequency > $weight ? $weight : $minFrequency;
             $maxFrequency = $maxFrequency < $weight ? $weight : $maxFrequency;
         }
@@ -88,7 +88,7 @@ class Tag extends ActiveRecord
             );
         }
 
-        asort($tags);
+        arsort($tags);
 
         return $tags;
     }

@@ -1,5 +1,6 @@
 <?php
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 ?>
 
@@ -19,9 +20,19 @@ use yii\helpers\Html;
             сегодня <b><?= 0 ?></b>,
             на модерации <b><?= \app\models\Moderation::find()->count() ?></b>
         </span>
+
         <div class="text-left">
             <b>Популярные теги:</b>
-            
+            <?php
+            $tagWeights = \app\models\Tag::getTagWeights(10);
+            foreach ($tagWeights as $tag => $weight) {
+                echo Html::a(
+                    "#" . $tag,
+                    Url::toRoute(['/', 'query' => "#" . $tag]),
+                    ['style' => "font-size:{$weight}pt; padding: 4px;"]
+                );
+            }
+            ?>
         </div>
     </div>
     <div class="col-xs-6">{...}</div>

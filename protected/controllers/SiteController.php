@@ -143,12 +143,25 @@ class SiteController extends Controller
     public function actionIndex($query = null)
     {
         $this->query = $query;
-        $queryTag = "";
         $queryText = "";
         if (preg_match('/^#([\S]+)/i', $this->query, $queryTag)) {
-            $queryTag = $queryTag[1];
+            $postIds = (new Query())
+                ->distinct()
+                ->select('tag4post.post_id')
+                ->from('tag4post')
+                ->innerJoin('tag', 'tag.id=tag4post.tag_id')
+                ->andFilterWhere(['like', 'tag.name', $queryTag[1]])
+                ->all();
+
+            $queryPostsByTag = [];
+            if (!empty($postIds)) {
+                foreach ($postIds as $postId) {
+                    $queryPostsByTag[] = $postId['post_id'];
+                }
+            }
         } else {
             $queryText = $this->query;
+            $queryPostsByTag = [];
         }
 
         $post_id = (int) Yii::$app->request->get('post_id', 0);
@@ -169,19 +182,10 @@ class SiteController extends Controller
             'query' => Post::find()
                 ->with(['tags', 'votes'])
                 ->where('visible = 1')
-                ->andFilterWhere([
-                    'in',
-                    'post.id',
-                    (new Query())
-                        ->select('tag4post.post_id')
-                        ->from('tag4post')
-                        ->innerJoin('tag', 'tag.id=tag4post.tag_id')
-                        ->andFilterWhere(['like', 'tag.name', $queryTag])
-                        ->distinct()
-                ])
+                ->andFilterWhere(['in', 'post.id', $queryPostsByTag])
                 ->andFilterWhere(['like', 'post.text', $queryText])
                 ->orderBy(['created' => SORT_DESC]),
-            'pagination' => ['pageSize' => 3],
+            'pagination' => ['pageSize' => 4],
         ]);
 
         $aKeywords = [];
