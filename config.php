@@ -12,9 +12,12 @@ return $config = [
         ],
         'db' => [
             'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host=localhost;dbname=aaaaa',
-            'username' => 'root',
-            'password' => '',
+            'dsn' => 'mysql:host=localhost;dbname=aaaaakz_site',
+            'username' => 'aaaaa_site',
+            'password' => 'Gjek473*',
+//            'dsn' => 'mysql:host=localhost;dbname=aaaaa',
+//            'username' => 'root',
+//            'password' => '',
             'charset' => 'utf8',
         ],
         'urlManager' => [
@@ -36,5 +39,18 @@ return $config = [
         'name' => 'A-a-a-a-a!kz',
         'siteName' => 'Сборник свободного народного творчества',
         'siteUrl' => 'http://aaaaa.kz/',
+
+        'googleAds' => <<<html
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- универсальный -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3550073859494126"
+     data-ad-slot="6060494689"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+html
     ],
 ];

@@ -35,5 +35,5 @@ use yii\helpers\Url;
             ?>
         </div>
     </div>
-    <div class="col-xs-6">{...}</div>
+    <div class="col-xs-6"><?= Yii::$app->params['googleAds'] ?></div>
 </div>
