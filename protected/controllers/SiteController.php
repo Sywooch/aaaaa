@@ -18,6 +18,7 @@ use yii\helpers\ArrayHelper;
 
 class SiteController extends Controller
 {
+    const PAGE_SIZE = 10;
     public $query = null;
 
     public function actions()
@@ -185,7 +186,7 @@ class SiteController extends Controller
                 ->andFilterWhere(['in', 'post.id', $queryPostsByTag])
                 ->andFilterWhere(['like', 'post.text', $queryText])
                 ->orderBy(['created' => SORT_DESC]),
-            'pagination' => ['pageSize' => 4],
+            'pagination' => ['pageSize' => self::PAGE_SIZE],
         ]);
 
         $aKeywords = [];
@@ -229,23 +230,81 @@ class SiteController extends Controller
         return $this->render('post', ['post' => $post]);
     }
 
-
+    /**
+     * @param $file
+     * @return string
+     */
     public function actionSitemap($file)
     {
         header('Cache-Control: no-cache, must-revalidate');
         header('Content-type: text/xml; charset=utf-8');
 
-        $items = [];
-        $posts = Post::find()->where('visible = 1')->all();
-        if (!empty($posts)) {
-            foreach ($posts as $post) {
-                $items[] = [
-                    'loc' => Yii::$app->params['siteUrl'] . "post/" . $post->id,
-                    'lastmod' => $post->created, //(new \DateTime())->format(),
-                    'changefreq' => 'daily',
-                    'priority' => '1',
+        $lastPost = Post::find()->where('visible=1')->orderBy(['created' =>SORT_DESC])->one();
+
+        switch ($file) {
+            case 'main':
+                $items = [
+                    [
+                        'loc' => Yii::$app->params['siteUrl'],
+                        'changefreq' => 'daily',
+                        'lastmod' => $lastPost->created,
+                        'priority' => '1',
+                    ],
+                    [
+                        'loc' => Yii::$app->params['siteUrl'] . "add",
+                        'changefreq' => 'daily',
+                        'lastmod' => $lastPost->created,
+                        'priority' => '1',
+                    ],
                 ];
-            }
+//                return $this->renderPartial('xml_sitemap', ['items' => $items]);
+                break;
+
+            case 'pages':
+                $items = [];
+                $postCount = Post::find()->where('visible=1')->count();
+                $pageCount = ceil($postCount / self::PAGE_SIZE);
+                for ($pageNumber = 1; $pageNumber <= $pageCount; $pageNumber++ ) {
+                    $items[] = [
+                        'loc' => Yii::$app->params['siteUrl'] . "index?page=" . $pageNumber,
+                        'changefreq' => 'daily',
+                        'lastmod' => $lastPost->created,
+                        'priority' => '1',
+                    ];
+                }
+//                return $this->renderPartial('xml_sitemap', ['items' => $items]);
+                break;
+
+            case 'posts':
+                $items = [];
+                $posts = Post::find()->where('visible = 1')->all();
+                if (!empty($posts)) {
+                    foreach ($posts as $post) {
+                        $items[] = [
+                            'loc' => Yii::$app->params['siteUrl'] . "post/" . $post->id,
+                            'lastmod' => $post->created,
+                            'changefreq' => 'daily',
+                            'priority' => '1',
+                        ];
+                    }
+                }
+//                return $this->renderPartial('xml_sitemap', ['items' => $items]);
+                break;
+
+            case 'sitemap':
+            default:
+                $sitemaps = [
+                    [
+                        'loc' => Yii::$app->params['siteUrl'] . 'posts.xml',
+                        'lastmod' => $lastPost->created,
+                    ],
+                    [
+                        'loc' => Yii::$app->params['siteUrl'] . 'pages.xml',
+                        'lastmod' => $lastPost->created,
+                    ],
+                ];
+                return $this->renderPartial('xml_sitemapindex', ['sitemaps' => $sitemaps]);
+                Yii::$app->end();
         }
 
         return $this->renderPartial('xml_sitemap', ['items' => $items]);
