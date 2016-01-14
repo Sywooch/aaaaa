@@ -18,8 +18,11 @@ $this->title = $title;
 
 echo $this->render('_header');
 
-echo '{ads}';
+echo Yii::$app->params['googleAds'];
 
 echo $this->render('_post', ['model' => $post]);
+echo $this->render('_share42', ['model' => $post]);
 
-echo '{ads}';
+echo Yii::$app->params['googleAds'];
+
+echo $this->render('_ads');

@@ -23,3 +23,5 @@ echo ListView::widget([
     'itemView' => '_post',
     'emptyText' => 'Нет новых постов.',
 ]);
+
+echo $this->render('_ads');

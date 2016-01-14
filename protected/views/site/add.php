@@ -26,15 +26,14 @@ $this->params['breadcrumbs'] = ['label' => 'Отправить пост'];
 
 <?php if (Yii::$app->session->hasFlash('success')): ?>
 
-    {ads}
+    <?= Yii::$app->params['googleAds'] ?>
 
     <div class="alert alert-success">
         Ваш пост был отправлен на модерацию и после проверки будет опубликован на сайте.<br>
         (через 3 секунды Вы будете перенаправлены на <a href="/">главную страницу</a>)
     </div>
 
-    {ads}
-
+    <?= Yii::$app->params['googleAds'] ?>
     <?php $this->registerJs('setTimeout(function(){window.location="/";}, 3000);', $this::POS_END);?>
 
 <?php else: ?>
@@ -77,3 +76,4 @@ $this->params['breadcrumbs'] = ['label' => 'Отправить пост'];
 <?php endif; ?>
 <br>
 <br>
+<?= $this->render('_ads') ?>
