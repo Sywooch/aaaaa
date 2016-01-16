@@ -2,6 +2,7 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+use app\components\ContentGenerator;
 
 /* @var $model \app\models\Post */
 
@@ -36,10 +37,11 @@ use yii\widgets\Pjax;
             <?php Pjax::end(); ?>
         </div>
     </div>
-    <p>
+    <div class="well">
         <?php
         if ($data = json_decode($model->text)) {
             // анализ и вывод соответствующего объекта: картинка, галлерея, файл, музыка, видео, гиперссылка
+            echo ContentGenerator::parse($data);
         } else {
             echo str_replace("\n", "<br>", $model->text); /*Html::encode()*/  // plain text, not json
         }
@@ -51,5 +53,5 @@ use yii\widgets\Pjax;
                 <?= Html::a("#" . $tag->name, Url::toRoute(['/', 'query' => "#" . $tag->name])) ?>
             <?php endforeach;?>
         <?php endif; ?>
-    </p>
+    </div>
 </div>

@@ -30,12 +30,16 @@ a:hover {
     margin-top: 10px;
     margin-bottom: 20px;
 }
-
+.post h3 {
+    margin: 0;
+}
 .post p {
+    /*
     background-color: #F3F3F3;
     border: 1pt dotted #BBBBBB;
     border-radius: 4px;
     padding: 8px;
+    */
     font-size: 11pt;
     line-height: 1.3em;
 }

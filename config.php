@@ -12,12 +12,12 @@ return $config = [
         ],
         'db' => [
             'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host=localhost;dbname=aaaaakz_site',
-            'username' => 'aaaaa_site',
-            'password' => 'Gjek473*',
-//            'dsn' => 'mysql:host=localhost;dbname=aaaaa',
-//            'username' => 'root',
-//            'password' => '',
+//            'dsn' => 'mysql:host=srv-db-plesk09.ps.kz:3306;dbname=aaaaakz_site',
+//            'username' => 'aaaaa_site',
+//            'password' => 'Gjek473*',
+            'dsn' => 'mysql:host=localhost;dbname=aaaaa',
+            'username' => 'root',
+            'password' => '',
             'charset' => 'utf8',
         ],
         'urlManager' => [
