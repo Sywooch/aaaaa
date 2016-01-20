@@ -10,11 +10,8 @@ return $config = [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
         ],
-        'db' => [
+        'db' => file_exists(__DIR__ . '/db.php') ? require(__DIR__ . '/db.php') : [
             'class' => 'yii\db\Connection',
-//            'dsn' => 'mysql:host=srv-db-plesk09.ps.kz:3306;dbname=aaaaakz_site',
-//            'username' => 'aaaaa_site',
-//            'password' => 'Gjek473*',
             'dsn' => 'mysql:host=localhost;dbname=aaaaa',
             'username' => 'root',
             'password' => '',

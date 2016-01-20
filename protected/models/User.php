@@ -14,9 +14,9 @@ class User extends \yii\base\Object implements \yii\web\IdentityInterface
         '100' => [
             'id' => '100',
             'username' => 'admin',
-            'password' => 'admin2014',
-            'authKey' => 'test100key',
-            'accessToken' => '100-token',
+            'password' => 'f559410c2ac8e82b7f6cd9fbf5a68e9e62ded565',
+            'authKey' => 'test100keye0d6efc4580e3719fab2be23569797bf07397391',
+            'accessToken' => '100-tokene0d6efc4580e3719fab2be23569797bf07397391',
         ],
 //        '101' => [
 //            'id' => '101',
@@ -99,6 +99,6 @@ class User extends \yii\base\Object implements \yii\web\IdentityInterface
      */
     public function validatePassword($password)
     {
-        return $this->password === $password;
+        return $this->password === sha1($password);
     }
 }

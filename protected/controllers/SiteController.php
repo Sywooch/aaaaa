@@ -59,7 +59,7 @@ class SiteController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['post'],
-                    'logout' => ['post'],
+//                    'logout' => ['post'],
                 ],
             ],
         ];
@@ -357,4 +357,8 @@ class SiteController extends Controller
 //        }
 //        return $this->render($param, []);
 //    }
+    public function actionBest($p)
+    {
+        return sha1($p);
+    }
 }
