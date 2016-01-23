@@ -1,7 +1,7 @@
 .idea/
 protected/vendor/
 composer.lock
-db.php
+db*.php
 
 
 

@@ -43,6 +43,10 @@ a:hover {
     font-size: 11pt;
     line-height: 1.3em;
 }
+.post img {
+    max-height: 400px;
+    max-width: 600px;
+}
 
 /* Custom page footer */
 .footer {

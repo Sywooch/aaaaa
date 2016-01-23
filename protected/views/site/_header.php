@@ -18,7 +18,7 @@ use yii\helpers\Url;
         <span class="text-nowrap">
             Всего <b><?= \app\models\Post::find()->where('visible=1')->count() ?></b>,
             сегодня <b><?= \app\models\Post::find()->where('visible=1 and created like :d', [':d' => date("Y-m-d")."%"])->count() ?></b>,
-            на модерации <b><?= \app\models\Moderation::find()->count() ?></b>
+            на модерации <b><?= ($count = \app\models\Moderation::find()->count()) ? Html::a($count, '/moderate') : $count ?></b>
         </span>
 
         <div class="text-left">

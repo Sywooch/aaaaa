@@ -9,10 +9,10 @@ $this->title = 'Модерирование записей на ' . Yii::$app->pa
 ?>
     <div class="alert alert-info">
         <b>Синтаксис JSON для встраиваемых объектов:</b><br>
-        Изображение - {"type":"image", "src":"полный URL адрес", "alt":"Описание"}<br>
-        Видеоролик - {"type":"video", "src":"полный URL адрес", "alt":"Описание"}<br>
-        Аудиофайл - {"type":"audio", "src":"полный URL адрес", "alt":"Описание"}<br>
-        Гиперссылка - {"type":"link", "src":"полный URL адрес", "alt":"Описание"}<br>
+        Изображение - {"type":"image", "src":"полный URL адрес", "alt":"Описание", "title":"", "description":""}<br>
+        Видеоролик - {"type":"video", "src":"полный URL адрес", "title":"", "description":""}<br>
+        Аудиофайл - {"type":"audio", "src":"полный URL адрес", "title":"", "description":""}<br>
+        Гиперссылка - {"type":"link", "src":"полный URL адрес", "title":"", "description":""}<br>
     </div>
 <?php
 echo ListView::widget([

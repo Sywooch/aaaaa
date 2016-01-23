@@ -8,7 +8,13 @@ use yii\helpers\Html;
 use app\models\Tag;
 
 /* @var $this yii\web\View */
-/* @var $form yii\bootstrap\ActiveForm */
+/* @var $model \app\models\Post */
+
+$btnFormat = <<<html
+<button type="button" class="kv-action-btn kv-btn-format" title=""
+    data-toggle="tooltip" data-container="body" data-original-title="Обработать"
+    ><i class="glyphicon glyphicon-compressed"></i></button>
+html;
 
 echo DetailView::widget([
     'model' => $model,
@@ -23,6 +29,7 @@ echo DetailView::widget([
         'url' => Url::toRoute('/delete'),
         'params' => ['id' => $model->id, 'mydelete' => true],
     ],
+    'buttons2' => $btnFormat . ' {view} {reset} {save}',
     'attributes' => [
         ['attribute' => 'id', 'type' => DetailView::INPUT_HIDDEN],
         ['attribute' => 'created', 'type' => DetailView::INPUT_TEXT],
@@ -34,3 +41,14 @@ echo DetailView::widget([
         ]],
     ]
 ]);
+
+$this->registerJs(<<<js
+$('.kv-btn-format').click(function() {
+    var _form = $(this).closest('form');
+    $.post("/format", _form.serialize(), function(response) {
+        _form.find('[name=Moderation\\\[text\\\]]').val(response);
+    });
+});
+
+js
+, $this::POS_END);

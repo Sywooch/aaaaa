@@ -1,6 +1,7 @@
 <?php
 namespace app\controllers;
 
+use app\components\ContentGenerator;
 use app\models\LoginForm;
 use app\models\Moderation;
 use app\models\Post;
@@ -49,7 +50,7 @@ class SiteController extends Controller
                         //'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['logout', 'moderate', 'delete'],
+                        'actions' => ['logout', 'moderate', 'format', 'delete'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -131,6 +132,19 @@ class SiteController extends Controller
         ]);
 
         return $this->render('moderate', ['posts' => $posts, 'model' => $model]);
+    }
+
+    /*
+     * Умное форматирование поста
+     */
+    public function actionFormat()
+    {
+        $text = ArrayHelper::getValue(Yii::$app->request->post('Moderation', []), 'text');
+        if (!$text) {
+            throw new Exception('Error!');
+        }
+
+        return ContentGenerator::Format($text);
     }
 
     /**
