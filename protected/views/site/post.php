@@ -7,7 +7,7 @@ use yii\helpers\Html;
 /* @var $description string */
 /* @var $keywords string */
 
-$title = 'Пост №' . ArrayHelper::getValue($post, 'id');
+$title = 'Пост №' . ArrayHelper::getValue($post, 'id') . " - " . Yii::$app->params['siteName'];
 $this->registerMetaTag(['name' => 'og:type', 'content' => 'article']);
 $this->registerMetaTag(['name' => 'og:title', 'content' => $title]);
 $this->registerMetaTag(['name' => 'og:site_name', 'content' => Yii::$app->params['siteName']]);

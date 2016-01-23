@@ -14,8 +14,8 @@ use yii\db\Expression;
 use yii\db\Query;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\Html;
 use yii\web\Controller;
-use yii\web\HttpException;
 use yii\web\Response;
 use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
@@ -238,17 +238,21 @@ class SiteController extends Controller
         ]);
 
         $aKeywords = [];
+        $aDescriptions = [];
         foreach ($posts->getModels() as $pagePost) {
             if (!empty($pagePost->tags)) {
                 foreach ($pagePost->tags as $tag) {
                     $aKeywords[] = ArrayHelper::getValue($tag, 'name');
                 }
             }
+            if (!json_decode($pagePost->text)) {
+                $aDescriptions[] = Html::encode($pagePost->text); // plain text, not json
+            }
         }
 
         $keywords = implode(', ', array_unique($aKeywords));
-        $description = '';
-        $title = '';
+        $description = implode("\r\n\r\n\r\n", $aDescriptions);
+        $title = Yii::$app->params['name'] . ' - развлекательный сайт для всех!';
 
         return $this->render('index', [
             'posts' => $posts,
