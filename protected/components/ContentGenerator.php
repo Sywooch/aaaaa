@@ -1,6 +1,8 @@
 <?php
 namespace app\components;
 
+use Abraham\TwitterOAuth\TwitterOAuth;
+use app\models\Post;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\base\Exception;
@@ -136,5 +138,61 @@ class ContentGenerator
         );
 
         return $text;
+    }
+
+    /*
+     * Публикация в твиттере
+     */
+    public static function Twitter(Post $post)
+    {
+        if (!\Yii::$app->params['twitter']) {
+            return false;
+        }
+
+        // autoload.php does not work
+        require_once ('protected/vendor/abraham/twitteroauth/autoload.php');
+        $twitter = new TwitterOAuth(
+            ArrayHelper::getValue(\Yii::$app->params['twitter'], 'consumerKey'),
+            ArrayHelper::getValue(\Yii::$app->params['twitter'], 'consumerSecret'),
+            ArrayHelper::getValue(\Yii::$app->params['twitter'], 'oauthToken'),
+            ArrayHelper::getValue(\Yii::$app->params['twitter'], 'oauthTokenSecret')
+        );
+
+        if ($data = json_decode($post->text)) {
+            switch ($data->type) {
+                case self::TYPE_IMAGE:
+                    $media = $twitter->upload(
+                        'media/upload',
+                        ['media' => $data->src]
+                    );
+                    $statuses = $twitter->post(
+                        "statuses/update",
+                        [
+                            "status" => "Новое фото " . \Yii::$app->params['siteUrl'] . 'post/' . $post->id .
+                                " #" . implode(' #', ArrayHelper::map(ArrayHelper::getValue($post, 'tags'), 'id', 'name')),
+                            "media_ids" => $media->media_id_string,
+                        ]
+                    );
+                    break;
+                case self::TYPE_VIDEO:
+                    $statuses = $twitter->post(
+                        "statuses/update",
+                        [
+                            "status" => "Новое видео " . \Yii::$app->params['siteUrl'] . 'post/' . $post->id .
+                                " #" . implode(' #', ArrayHelper::map(ArrayHelper::getValue($post, 'tags'), 'id', 'name')),
+                        ]
+                    );
+                    break;
+            }
+        } else {
+            $statuses = $twitter->post(
+                "statuses/update",
+                [
+                    "status" => "Новый пост №" . $post->id . " " . \Yii::$app->params['siteUrl'] . 'post/' . $post->id .
+                        " #" . implode(' #', ArrayHelper::map(ArrayHelper::getValue($post, 'tags'), 'id', 'name')),
+                ]
+            );
+        }
+
     }
 }

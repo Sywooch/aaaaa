@@ -37,6 +37,8 @@ return $config = [
         'siteName' => 'Сборник свободного народного творчества',
         'siteUrl' => 'http://aaaaa.kz/',
 
+        'twitter' => file_exists(__DIR__ . '/twitter.php') ? require(__DIR__ . '/twitter.php') : null,
+        
         'googleAds' => <<<html
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- универсальный -->

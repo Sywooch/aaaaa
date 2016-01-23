@@ -1,6 +1,7 @@
 <?php
 namespace app\controllers;
 
+use Abraham\TwitterOAuth\TwitterOAuth;
 use app\components\ContentGenerator;
 use app\models\LoginForm;
 use app\models\Moderation;
@@ -123,11 +124,13 @@ class SiteController extends Controller
                     }
                 }
                 $model->delete();
+                // пуюликация в твиттере
+                ContentGenerator::Twitter($post);
             }
         }
 
         $posts = new ActiveDataProvider([
-            'query' => Moderation::find()->orderBy(['created' => SORT_DESC]),
+            'query' => Moderation::find()->orderBy(['created' => SORT_ASC]),
             'pagination' => ['pageSize' => 10],
         ]);
 

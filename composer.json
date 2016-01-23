@@ -21,6 +21,7 @@
 		"yiisoft/yii2": ">=2.0.4",
 		"yiisoft/yii2-bootstrap": "^2.0",
 		"kartik-v/yii2-widget-select2": "^2.0",
-		"kartik-v/yii2-detail-view": "*"
+		"kartik-v/yii2-detail-view": "*",
+		"abraham/twitteroauth": "^0.6.2"
 	}
 }
