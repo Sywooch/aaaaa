@@ -47,8 +47,17 @@ AppAsset::register($this);
     <?= $content ?>
 
     <footer class="footer">
-        <p>&copy; <?= Yii::$app->params['name'] ?>, 2015-<?= date('Y') ?>. Все права защищены.</p>
-        <p>Мнение администратора может не совпадать с мнением автора поста.</p>
+        <div class="row">
+            <div class="col-xs-6">
+                <p>&copy; <?= Yii::$app->params['name'] ?>, 2015-<?= date('Y') ?>. Все права защищены.</p>
+                <p>Мнение администратора может не совпадать с мнением автора поста.</p>
+            </div>
+            <div class="col-xs-6">
+                <a href="https://twitter.com/aaaaakz2" class="pull-right"
+                   title="<?= Yii::$app->params['name'] ?> в Twitter"
+                >Читайте нас в Twitter <i class="glyphicon glyphicon-retweet"></i> </a>
+            </div>
+        </div>
     </footer>
 
 </div> <!-- /container -->

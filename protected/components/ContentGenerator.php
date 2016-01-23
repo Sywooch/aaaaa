@@ -169,7 +169,8 @@ class ContentGenerator
                         "statuses/update",
                         [
                             "status" => "Новое фото " . \Yii::$app->params['siteUrl'] . 'post/' . $post->id .
-                                " #" . implode(' #', ArrayHelper::map(ArrayHelper::getValue($post, 'tags'), 'id', 'name')),
+                                " #" . implode(' #', ArrayHelper::map(ArrayHelper::getValue($post, 'tags'), 'id', 'name')) .
+                                " #aaaaakz",
                             "media_ids" => $media->media_id_string,
                         ]
                     );
@@ -179,7 +180,8 @@ class ContentGenerator
                         "statuses/update",
                         [
                             "status" => "Новое видео " . \Yii::$app->params['siteUrl'] . 'post/' . $post->id .
-                                " #" . implode(' #', ArrayHelper::map(ArrayHelper::getValue($post, 'tags'), 'id', 'name')),
+                                " #" . implode(' #', ArrayHelper::map(ArrayHelper::getValue($post, 'tags'), 'id', 'name')) .
+                                " #aaaaakz",
                         ]
                     );
                     break;
@@ -189,7 +191,8 @@ class ContentGenerator
                 "statuses/update",
                 [
                     "status" => "Новый пост №" . $post->id . " " . \Yii::$app->params['siteUrl'] . 'post/' . $post->id .
-                        " #" . implode(' #', ArrayHelper::map(ArrayHelper::getValue($post, 'tags'), 'id', 'name')),
+                        " #" . implode(' #', ArrayHelper::map(ArrayHelper::getValue($post, 'tags'), 'id', 'name')) .
+                        " #aaaaakz",
                 ]
             );
         }
