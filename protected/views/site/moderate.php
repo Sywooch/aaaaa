@@ -1,5 +1,6 @@
 <?php
 use yii\widgets\ListView;
+use yii\jui\Dialog;
 
 /* @var $this yii\web\View */
 /* @var $posts \yii\data\ActiveDataProvider */
@@ -15,6 +16,14 @@ $this->title = 'Модерирование записей на ' . Yii::$app->pa
         Гиперссылка - {"type":"link", "src":"полный URL адрес", "title":"", "description":""}<br>
     </div>
 <?php
+echo Dialog::widget([
+    'id' => 'dlg_preview',
+    'clientOptions' => [
+        'modal' => true,
+        'autoOpen' => false,
+        'width' => 600,
+    ],
+]);
 echo ListView::widget([
     'dataProvider' => $posts,
     'layout' => '{items}{pager}',

@@ -5,6 +5,7 @@ use kartik\detail\DetailView;
 
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\jui\Dialog;
 use app\models\Tag;
 
 /* @var $this yii\web\View */
@@ -47,6 +48,27 @@ $('.kv-btn-format').click(function() {
     var _form = $(this).closest('form');
     $.post("/format", _form.serialize(), function(response) {
         _form.find('[name=Moderation\\\[text\\\]]').val(response);
+        // предпросмотр в диалоговом окне
+        try {
+
+            var _json = $.parseJSON(response);
+            if (typeof _json != 'object') return false;
+            $('#dlg_preview')
+                .empty()
+                .addClass('post')
+                .append($("<h3/>").addClass('text-center').html(_json.title))
+                .append(
+                    _json.type == 'image'
+                    ? $("<img/>").addClass('img-responsive center-block').attr("src", _json.src)
+                    : $("<iframe/>").addClass('embed-responsive-item').attr("src", _json.src)
+                        .attr("allowfullscreen", 1).attr("height", "400").attr("width", "100%")
+                )
+                .append($("<p/>").html(_json.description))
+                .dialog('open');
+
+        } catch (err) {
+            alert(response);
+        }
     });
 });
 
