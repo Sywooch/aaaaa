@@ -3,13 +3,16 @@ namespace app\controllers;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
 use app\components\ContentGenerator;
+use app\components\Grabber;
 use app\models\LoginForm;
 use app\models\Moderation;
 use app\models\Post;
+use app\models\Source;
 use app\models\Tag;
 use app\models\Vote;
 use Yii;
 use yii\base\Exception;
+use yii\base\Model;
 use yii\db\Expression;
 use yii\db\Query;
 use yii\filters\AccessControl;
@@ -46,7 +49,11 @@ class SiteController extends Controller
 //                'only' => ['logout'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'post', 'search', 'add', 'best', 'random', 'captcha', 'login', 'error', 'sitemap'],
+                        'actions' => [
+                            'index', 'post', 'search', 'add', 'best', 'random',
+                            'captcha', 'login', 'error', 'sitemap',
+                            'grab', 'test',
+                        ],
                         'allow' => true,
                         //'roles' => ['?'],
                     ],
@@ -381,5 +388,36 @@ class SiteController extends Controller
     public function actionBest($p)
     {
         return sha1($p);
+    }
+
+    public function actionGrab()
+    {
+//        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $success = true;
+
+        $source = Source::find()
+            ->joinWith('logs')
+            ->where(['enable' => true])
+            ->orderBy(['updated' => SORT_ASC])
+            ->one();
+
+        if ($source) {
+            $grabber = new Grabber($source);
+            $newPosts = $grabber->execute();
+            if (!empty($newPosts)) {
+                foreach ($newPosts as $post) {
+                    $model = new Moderation();
+                    $model->text = $post;
+                    $model->hash = md5($model->text);
+                    $model->ip = "127.0.0.1"; //Yii::$app->request->getUserIP();
+                    $model->user_agent = "Auto Grabber"; //Yii::$app->request->getUserAgent();
+                    $success = $model->save() && $success;
+                }
+            }
+            $source->updateLog();
+        }
+
+        return $success;
     }
 }
