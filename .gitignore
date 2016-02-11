@@ -3,6 +3,6 @@ protected/vendor/
 composer.lock
 twitter.php
 db.php
-
+*.zip
 
 

@@ -1,7 +1,0 @@
-
-interface Parser
-
-- class ParserRSS
-- class ParserHTML
-- class ParserOther
-
