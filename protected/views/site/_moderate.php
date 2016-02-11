@@ -53,10 +53,13 @@ $('.kv-btn-format').click(function() {
         try {
 
             function PolyItem(data) {
-                for (var item in data) {
-
+                var div = $("<div/>");
+                for (var i in data) {
+                    div.append($("<h3/>").addClass('text-center').html(data[i].title));
+                    div.append($("<img/>").addClass('img-responsive center-block').attr("src", data[i].src));
+                    div.append($("<p/>").html(data[i].description));
                 }
-                return data;
+                return div;
             }
 
             var _json = $.parseJSON(response);
@@ -67,9 +70,7 @@ $('.kv-btn-format').click(function() {
                 .append($("<h3/>").addClass('text-center').html(_json.title))
                 .append(
                     _json.type == undefined
-                    ? (
-                        null // доделать вывод нескольких картинок
-                    )
+                    ? PolyItem(_json)
                     : (
                         _json.type == 'image'
                         ? $("<img/>").addClass('img-responsive center-block').attr("src", _json.src)
