@@ -23,6 +23,8 @@
 		"kartik-v/yii2-widget-select2": "^2.0",
 		"kartik-v/yii2-detail-view": "*",
 		"abraham/twitteroauth": "^0.6.2",
-		"yiisoft/yii2-jui": "^2.0"
+		"yiisoft/yii2-jui": "^2.0",
+		"garyjl/yii2-simple_html_dom": "dev-master",
+		"curl/curl": "^1.3"
 	}
 }

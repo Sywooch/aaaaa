@@ -25,6 +25,7 @@ class ContentGenerator
             foreach ($data as $record) {
                 $output .= self::Parse($record);
             }
+            return $output;
         }
 
         if (!isset($data->type)){

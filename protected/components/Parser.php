@@ -8,6 +8,6 @@ interface Parser
     /*
      * Парсинг постов из данных
      */
-    public function parse($data);
+    public function parse(\simple_html_dom $dom);
 
 }

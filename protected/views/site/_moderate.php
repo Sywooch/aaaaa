@@ -33,6 +33,7 @@ echo DetailView::widget([
     'buttons2' => $btnFormat . ' {view} {reset} {save}',
     'attributes' => [
         ['attribute' => 'id', 'type' => DetailView::INPUT_HIDDEN],
+        ['attribute' => 'hash', 'type' => DetailView::INPUT_HIDDEN],
         ['attribute' => 'created', 'type' => DetailView::INPUT_TEXT],
         ['attribute' => 'text', 'type' => DetailView::INPUT_TEXTAREA],
         ['attribute' => 'tags', 'type' => DetailView::INPUT_SELECT2, 'widgetOptions' => [
@@ -51,6 +52,13 @@ $('.kv-btn-format').click(function() {
         // предпросмотр в диалоговом окне
         try {
 
+            function PolyItem(data) {
+                for (var item in data) {
+
+                }
+                return data;
+            }
+
             var _json = $.parseJSON(response);
             if (typeof _json != 'object') return false;
             $('#dlg_preview')
@@ -58,10 +66,16 @@ $('.kv-btn-format').click(function() {
                 .addClass('post')
                 .append($("<h3/>").addClass('text-center').html(_json.title))
                 .append(
-                    _json.type == 'image'
-                    ? $("<img/>").addClass('img-responsive center-block').attr("src", _json.src)
-                    : $("<iframe/>").addClass('embed-responsive-item').attr("src", _json.src)
-                        .attr("allowfullscreen", 1).attr("height", "400").attr("width", "100%")
+                    _json.type == undefined
+                    ? (
+                        null // доделать вывод нескольких картинок
+                    )
+                    : (
+                        _json.type == 'image'
+                        ? $("<img/>").addClass('img-responsive center-block').attr("src", _json.src)
+                        : $("<iframe/>").addClass('embed-responsive-item').attr("src", _json.src)
+                            .attr("allowfullscreen", 1).attr("height", "400").attr("width", "100%")
+                    )
                 )
                 .append($("<p/>").html(_json.description))
                 .dialog('open');

@@ -10,6 +10,7 @@ use app\models\Post;
 use app\models\Source;
 use app\models\Tag;
 use app\models\Vote;
+use Curl\Curl;
 use Yii;
 use yii\base\Exception;
 use yii\base\Model;
@@ -117,7 +118,7 @@ class SiteController extends Controller
             $post = new Post();
             $post->attributes = $model->attributes;
             $post->text = $saveHtmlData; // сохранять HTML в обход фильтра в модели Moderation
-            $post->hash = md5($saveHtmlData);
+//            $post->hash = md5($saveHtmlData); // оставлять прежний хеш для отслеживания уникальности записей
             $post->visible = true;
             $tags = Yii::$app->request->post($model->formName(), ['tags'=>[]])['tags'];
 
@@ -407,9 +408,16 @@ class SiteController extends Controller
             $newPosts = $grabber->execute();
             if (!empty($newPosts)) {
                 foreach ($newPosts as $post) {
+                    $hashPost = md5($post);
+                    // есть ли в базе Post или Moderation
+                    $doubling = Post::findOne(['hash' => $hashPost]) || Moderation::findOne(['hash' => $hashPost]);
+                    if ($doubling) {
+                        continue;
+                    }
+                    // добавляем новый пост на модерацию
                     $model = new Moderation();
                     $model->text = $post;
-                    $model->hash = md5($model->text);
+                    $model->hash = $hashPost;
                     $model->ip = "127.0.0.1"; //Yii::$app->request->getUserIP();
                     $model->user_agent = "Auto Grabber"; //Yii::$app->request->getUserAgent();
                     $success = $model->save() && $success;
