@@ -16,6 +16,8 @@ class Grabber
     public function __construct(Source $source)
     {
         try {
+            // autoload.php does not work
+            require_once ('protected/vendor/garyjl/yii2-simple_html_dom/SimpleHtmlDom.php');
             $this->dom = SimpleHTMLDom::str_get_html($this->getData($source->url));
             $this->parser = $this->getParser($source->parser);
         } catch (Exception $e) {
