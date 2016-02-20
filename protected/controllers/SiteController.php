@@ -193,7 +193,7 @@ class SiteController extends Controller
                 // публикация в твиттере
                 ContentGenerator::Twitter($post);
 
-                $this->redirect('moderate');
+                return $this->redirect('moderate');
             }
         }
 
