@@ -25,6 +25,7 @@ class Moderation extends ActiveRecord
             [['created'], 'default', 'value' => date("Y-m-d H:i:s")],
             [['text', 'hash', 'created', 'ip', 'user_agent'], 'required'],
             ['verifyCode', 'captcha', 'on' => self::SCENARIO_CREATE],
+            ['tags', 'safe'],
         ];
     }
 
@@ -33,6 +34,7 @@ class Moderation extends ActiveRecord
         return [
             'text' => 'Текст поста',
             'verifyCode' => 'Код с картинки',
+            'tags' => 'Теги',
         ];
     }
 

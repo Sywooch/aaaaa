@@ -7,7 +7,7 @@ use yii\jui\Dialog;
 
 $this->title = 'Модерирование записей на ' . Yii::$app->params['name'];
 
-?>
+/*
     <div class="alert alert-info">
         <b>Синтаксис JSON для встраиваемых объектов:</b><br>
         Изображение - {"type":"image", "src":"полный URL адрес", "alt":"Описание", "title":"", "description":""}<br>
@@ -15,7 +15,7 @@ $this->title = 'Модерирование записей на ' . Yii::$app->pa
         Аудиофайл - {"type":"audio", "src":"полный URL адрес", "title":"", "description":""}<br>
         Гиперссылка - {"type":"link", "src":"полный URL адрес", "title":"", "description":""}<br>
     </div>
-<?php
+
 echo Dialog::widget([
     'id' => 'dlg_preview',
     'clientOptions' => [
@@ -24,6 +24,7 @@ echo Dialog::widget([
         'width' => 600,
     ],
 ]);
+*/
 echo ListView::widget([
     'dataProvider' => $posts,
     'layout' => '{items}{pager}',
