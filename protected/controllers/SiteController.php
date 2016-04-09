@@ -26,7 +26,7 @@ use yii\helpers\ArrayHelper;
 
 class SiteController extends Controller
 {
-    const PAGE_SIZE = 10;
+    const PAGE_SIZE = 50;
     public $query = null;
 
     public function actions()
