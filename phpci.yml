@@ -1,25 +1,36 @@
 build_settings:
     #verbose: false
     #clone_depth: 1 # depth of 1 is a shallow clone, remove this line to clone entire repo
-    ignore:
-        - "vendor"
-        - "tests"
+#    ignore:
+#        - "vendor"
+#        - "tests"
 #    mysql:
 #        host: "localhost"
 #        user: "root"
 #        pass: ""
 
 setup:
-#    mysql:
-#        - "DROP DATABASE IF EXISTS test;"
-#        - "CREATE DATABASE test;"
+    mysql:
+        - "DROP USER IF EXISTS 'aaaaa_user'@'localhost';"
+        - "DROP DATABASE IF EXISTS aaaaa;"
+        - "CREATE DATABASE aaaaa;"
+        - "CREATE USER 'aaaaa_user'@'localhost' IDENTIFIED BY 'aaaaa_password';"
+        - "GRANT ALL PRIVILEGES ON aaaaa.* TO 'aaaaa_user'@'localhost';"
 #        - "GRANT ALL PRIVILEGES ON test.* TO test@'localhost' IDENTIFIED BY 'test';"
     composer:
         action: "install"
         prefer_dist: false
     shell:
-        - "cd %BUILD_PATH% && php -r 'echo 1;' > 1.txt"
-        - "cd %BUILD_PATH% && php yii migrate/up --no-interactive"
+        - "cd %BUILD_PATH%"
+        - "echo '<?php' > db.php"
+        - "echo 'return [' >> db.php"
+        - "echo \"   'class' => 'yii\db\Connection',\" >> db.php"
+        - "echo \"   'dsn' => 'mysql:host=localhost;dbname=aaaaa',\" >> db.php"
+        - "echo \"   'username' => 'aaaaa_user',\" >> db.php"
+        - "echo \"   'password' => 'aaaaa_password',\" >> db.php"
+        - "echo \"   'charset' => 'utf8',\" >> db.php"
+        - "echo '];' >> db.php"
+        - "php yii migrate/up --no-interactive"
 
 #test:
 #    php_unit:
@@ -40,8 +51,9 @@ setup:
 #        task: "build"
 
 complete:
-#    mysql:
-#        - "DROP DATABASE IF EXISTS test;"
+    mysql:
+        - "DROP USER 'aaaaa_user'@'localhost';"
+        - "DROP DATABASE IF EXISTS aaaaa;"
 
 failure:
   email:
