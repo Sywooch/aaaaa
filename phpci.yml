@@ -11,7 +11,7 @@ build_settings:
 
 setup:
     mysql:
-        - "DROP USER IF EXISTS 'aaaaa_user'@'localhost';"
+        - "DROP USER 'aaaaa_user'@'localhost';"
         - "DROP DATABASE IF EXISTS aaaaa;"
         - "CREATE DATABASE aaaaa;"
         - "CREATE USER 'aaaaa_user'@'localhost' IDENTIFIED BY 'aaaaa_password';"
