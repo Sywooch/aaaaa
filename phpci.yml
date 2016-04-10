@@ -4,18 +4,18 @@ build_settings:
 #    ignore:
 #        - "vendor"
 #        - "tests"
-#    mysql:
-#        host: "localhost"
-#        user: "root"
-#        pass: ""
+    mysql:
+        host: "localhost"
+        user: "test"
+        pass: ""
 
 setup:
     mysql:
 #        - "DROP USER 'aaaaa_user'@'localhost';"
-        - "DROP DATABASE IF EXISTS aaaaa;"
-        - "CREATE DATABASE aaaaa;"
-        - "CREATE USER 'aaaaa_user'@'localhost' IDENTIFIED BY 'aaaaa_password';"
-        - "GRANT ALL PRIVILEGES ON aaaaa.* TO 'aaaaa_user'@'localhost';"
+        - "DROP DATABASE IF EXISTS test_aaaaa;"
+        - "CREATE DATABASE test_aaaaa;"
+#        - "CREATE USER 'aaaaa_user'@'localhost' IDENTIFIED BY 'aaaaa_password';"
+#        - "GRANT ALL PRIVILEGES ON aaaaa.* TO 'aaaaa_user'@'localhost';"
 #        - "GRANT ALL PRIVILEGES ON test.* TO test@'localhost' IDENTIFIED BY 'test';"
     composer:
         action: "install"
@@ -25,9 +25,9 @@ setup:
         - "echo '<?php' > db.php"
         - "echo 'return [' >> db.php"
         - "echo \"   'class' => 'yii\db\Connection',\" >> db.php"
-        - "echo \"   'dsn' => 'mysql:host=localhost;dbname=aaaaa',\" >> db.php"
-        - "echo \"   'username' => 'aaaaa_user',\" >> db.php"
-        - "echo \"   'password' => 'aaaaa_password',\" >> db.php"
+        - "echo \"   'dsn' => 'mysql:host=localhost;dbname=test_aaaaa',\" >> db.php"
+        - "echo \"   'username' => 'test',\" >> db.php"
+        - "echo \"   'password' => '',\" >> db.php"
         - "echo \"   'charset' => 'utf8',\" >> db.php"
         - "echo '];' >> db.php"
         - "php yii migrate/up --no-interactive"
@@ -52,7 +52,7 @@ setup:
 
 complete:
     mysql:
-        - "DROP USER 'aaaaa_user'@'localhost';"
+#        - "DROP USER 'aaaaa_user'@'localhost';"
         - "DROP DATABASE IF EXISTS aaaaa;"
 
 failure:
