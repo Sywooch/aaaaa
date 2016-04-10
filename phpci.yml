@@ -19,7 +19,7 @@ setup:
         prefer_dist: false
     shell:
         - "cd %BUILD_PATH% && php -r 'echo 1;' > 1.txt"
-#        - "cd %BUILD_PATH% && php yii migrate/up --no-interactive"
+        - "cd %BUILD_PATH% && php yii migrate/up --no-interactive"
 
 #test:
 #    php_unit:
