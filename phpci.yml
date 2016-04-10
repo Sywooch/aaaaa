@@ -30,7 +30,7 @@ setup:
         - "echo \"   'password' => '',\" >> db.php"
         - "echo \"   'charset' => 'utf8',\" >> db.php"
         - "echo '];' >> db.php"
-        - "php yii migrate/up --no-interactive"
+        - "php yii migrate/up --interactive=0"
 
 #test:
 #    php_unit:
@@ -53,7 +53,7 @@ setup:
 complete:
     mysql:
 #        - "DROP USER 'aaaaa_user'@'localhost';"
-        - "DROP DATABASE IF EXISTS aaaaa;"
+        - "DROP DATABASE IF EXISTS test_aaaaa;"
 
 failure:
   email:
