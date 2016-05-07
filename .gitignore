@@ -1,6 +1,7 @@
 .idea/
 protected/vendor/
 composer.lock
+deployer.phar
 twitter.php
 db.php
 *.zip
