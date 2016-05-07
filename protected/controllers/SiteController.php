@@ -26,7 +26,7 @@ use yii\helpers\ArrayHelper;
 
 class SiteController extends Controller
 {
-    const PAGE_SIZE = 10;
+    const PAGE_SIZE = 50;
     public $query = null;
 
     public function actions()
@@ -59,19 +59,19 @@ class SiteController extends Controller
                         //'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['logout', 'moderate', 'format', 'delete'],
+                        'actions' => ['logout', 'moderate', 'edit', 'format', 'delete'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
                 ],
             ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['post'],
-//                    'logout' => ['post'],
-                ],
-            ],
+//            'verbs' => [
+//                'class' => VerbFilter::className(),
+//                'actions' => [
+//                    'delete' => ['post'],
+////                    'logout' => ['post'],
+//                ],
+//            ],
         ];
     }
 
@@ -114,7 +114,12 @@ class SiteController extends Controller
         $data = Yii::$app->request->post('Moderation');
         $model = Moderation::findOne((int)$data['id']);
 
-        if ($model && $model->load(Yii::$app->request->post(), $model->formName()) && ($saveHtmlData = $model->text) && $model->validate()) {
+        if (
+            $model &&
+            $model->load(Yii::$app->request->post(), $model->formName()) &&
+            ($saveHtmlData = $model->text) &&
+            $model->validate()
+        ) {
             $post = new Post();
             $post->attributes = $model->attributes;
             $post->text = $saveHtmlData; // сохранять HTML в обход фильтра в модели Moderation
@@ -132,7 +137,7 @@ class SiteController extends Controller
                     }
                 }
                 $model->delete();
-                // пуюликация в твиттере
+                // публикация в твиттере
                 ContentGenerator::Twitter($post);
             }
         }
@@ -148,26 +153,61 @@ class SiteController extends Controller
     /*
      * Умное форматирование поста
      */
-    public function actionFormat()
+//    public function actionFormat()
+//    {
+//        $text = ArrayHelper::getValue(Yii::$app->request->post('Moderation', []), 'text');
+//        if (!$text) {
+//            throw new Exception('Error!');
+//        }
+//
+//        return ContentGenerator::Format($text);
+//    }
+
+    public function actionEdit($id)
     {
-        $text = ArrayHelper::getValue(Yii::$app->request->post('Moderation', []), 'text');
-        if (!$text) {
-            throw new Exception('Error!');
+        $model = Moderation::findOne((int)$id);
+        if (!$model) {
+            throw new Exception("Запись не найдена!");
         }
 
-        return ContentGenerator::Format($text);
+        if (
+            Yii::$app->request->isPost &&
+            $model->load(Yii::$app->request->post(), $model->formName()) &&
+            $model->validate() &&
+            !Yii::$app->request->post('nosave', false)
+        ) {
+            $post = new Post();
+            $post->attributes = $model->attributes;
+            $post->visible = true;
+            $tags = Yii::$app->request->post($model->formName(), ['tags'=>[]])['tags'];
+            if ($post->save()) {
+                if (! empty($tags)) {
+                    foreach ($tags as $tag) {
+                        $modelTag = Tag::add($tag);
+                        if ($modelTag) {
+                            $post->link('tags', $modelTag);
+                        }
+                    }
+                }
+                $model->delete();
+                // публикация в твиттере
+                ContentGenerator::Twitter($post);
+
+                return $this->redirect('moderate');
+            }
+        }
+
+        return $this->render('_edit', ['model' => $model]);
     }
 
     /**
      * Удаление записи
      * @return array
      */
-    public function actionDelete()
+    public function actionDelete($id)
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $id = Yii::$app->request->post('id');
-        $ok = Moderation::deleteAll('id = :id', [':id' => $id]);
-        return ['success' => $ok];
+        Moderation::deleteAll('id = :id', [':id' => $id]);
+        return $this->redirect(['moderate']);
     }
 
     /**
