@@ -15,7 +15,14 @@
 	"config": {
 	  "vendor-dir": "protected/vendor"
 	},
-	"minimum-stability": "dev",
+	"minimum-stability": "stable",
+	"prefer-stable": true,
+	"extra": {
+		"asset-installer-paths": {
+			"npm-asset-library": "protected/vendor/npm",
+			"bower-asset-library": "protected/vendor/bower"
+		}
+	},
 	"require": {
 		"php": ">=5.4.0",
 		"yiisoft/yii2": ">=2.0.4",
