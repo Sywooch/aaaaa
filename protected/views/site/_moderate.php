@@ -59,7 +59,7 @@ use app\models\Tag;
 
         echo $form->field($model, 'tags')->widget(Select2::className(), [
             'data' => ArrayHelper::map(Tag::find()->all(), 'id', 'name'),
-            'options' => ['multiple' => true, 'placeholder' => 'Теги',],
+            'options' => ['multiple' => true, 'placeholder' => 'Теги', 'id' => 'moderation-tags-' . $model->id,],
             'pluginOptions' => ['tags' => true, 'maximumInputLength' => 255,],
         ]);
 
