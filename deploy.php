@@ -14,9 +14,12 @@ set('shared_dirs', []);
 set('writable_dirs', ['assets']);
 
 // Configure servers
-server('production', 'aaaaa.phptest.info')
-    ->user('root')
-    ->identityFile('~/.ssh/id_rsa.pub', '~/.ssh/id_rsa', '')
+//server('production', 'aaaaa.phptest.info')
+//    ->user('root')
+//    ->identityFile('~/.ssh/id_rsa.pub', '~/.ssh/id_rsa', '')
+//    ->env('deploy_path', '/var/www/aaaaa');
+
+localServer("local")
     ->env('deploy_path', '/var/www/aaaaa');
 
 /**
