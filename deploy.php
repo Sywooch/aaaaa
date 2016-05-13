@@ -20,6 +20,7 @@ set('writable_dirs', ['assets']);
 //    ->env('deploy_path', '/var/www/aaaaa');
 
 localServer("local")
+    ->user("www-data")
     ->env('deploy_path', '/var/www/aaaaa');
 
 /**
