@@ -2,9 +2,9 @@
 /*
  * запускает деплой при наличии файла
  */
-$fileName = "start_deploy.php";
+$fileName = "/var/www/deploy/start_deploy.php";
 
 if (file_exists($fileName)) {
     unlink($fileName);
-    exec("dep deploy > deploy_log.txt");
+    exec("cd /var/www/deploy & dep deploy > deploy_log.txt");
 }
